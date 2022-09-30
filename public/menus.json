@@ -1,0 +1,129 @@
+[
+  {
+    "path": "/",
+    "meta": {
+      "title": "首页"
+    },
+    "children": [
+      {
+        "path": "/home",
+        "component": "Home"
+      }
+    ]
+  },
+  {
+    "path": "/loan-input",
+    "component": "Layout",
+    "redirect": "/loan-input/index",
+    "meta": {
+      "roles": [
+        "input"
+      ],
+      "title": "贷款管理"
+    },
+    "children": [
+      {
+        "path": "/loan-input/index",
+        "component": "loan-input/index",
+        "name": "loan-input",
+        "meta": {
+          "title": "贷款申请"
+        }
+      }
+    ]
+  },
+  {
+    "path": "/input-manager",
+    "redirect": "/input-manager/index",
+    "component": "Layout",
+    "meta": {
+      "roles": [
+        "input"
+      ],
+      "title": "申请管理"
+    },
+    "children": [
+      {
+        "path": "/input-manager/index",
+        "component": "input-manager/index",
+        "name": "input-manager",
+        "meta": {
+          "title": "申请列表"
+        }
+      }
+    ]
+  },
+  {
+    "path": "/loan-approve",
+    "component": "Layout",
+    "redirect": "/loan-approve/first",
+    "meta": {
+      "title": "贷款审批",
+      "roles": [
+        "approve"
+      ]
+    },
+    "children": [
+      {
+        "path": "/loan-approve/first",
+        "component": "loan-approve/first",
+        "name": "loan-approve/first",
+        "meta": {
+          "title": "初审"
+        }
+      },
+      {
+        "path": "/loan-approve/end",
+        "component": "loan-approve/end",
+        "name": "loan-approve/end",
+        "meta": {
+          "title": "终审"
+        }
+      }
+    ]
+  },
+  {
+    "path": "/contract",
+    "component": "Layout",
+    "redirect": "/contract/index",
+    "meta": {
+      "title": "标的管理"
+    },
+    "children": [
+      {
+        "path": "/contract/index",
+        "component": "contract/index",
+        "name": "contract",
+        "meta": {
+          "title": "合同列表"
+        }
+      }
+    ]
+  },
+  {
+    "path": "/permission",
+    "redirect": "/permission/create",
+    "component": "Layout",
+    "meta": {
+      "title": "权限管理"
+    },
+    "children": [
+      {
+        "path": "/permission/create",
+        "name": "permission/create",
+        "component": "permission/create",
+        "meta": {
+          "title": "创建管理员"
+        }
+      },
+      {
+        "path": "/permission/list",
+        "name": "permission/list",
+        "component": "permission/list",
+        "meta": {
+          "title": "列表展示"
+        }
+      }
+    ]
+  }
+]
