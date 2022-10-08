@@ -6,3 +6,7 @@ export const login = (user) => {
     password: user.password,
   }));
 };
+export const logout = () => {
+  return pretty(req.post("/user/logout"));
+};
+

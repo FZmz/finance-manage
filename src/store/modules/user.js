@@ -1,3 +1,5 @@
+import { logout } from "@/apis/user";
+import { Message } from "element-ui";
 export default {
   state: {
     isLogin: false,
@@ -24,6 +26,21 @@ export default {
     },
     changeUserMenus(state, payload) {
       state.userMenus = payload;
+    },
+  },
+  // 异步的行为放在action里面
+  actions: {
+    async doLogout({ commit, dispatch }, payload) {
+      let [res, err] = await logout();
+      if (err) {
+        return Message.error("退出失败！！！");
+      }
+      // 如果是异步action,也可以使用await
+      commit("changeIsLogin", false);
+      commit("changeUserInfo", null);
+      commit("changeUserMenus", null);
+      // 清空本地存储
+      window.sessionStorage.setItem("token", "");
     },
   },
 };

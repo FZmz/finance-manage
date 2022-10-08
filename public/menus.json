@@ -1,15 +1,9 @@
 [
   {
-    "path": "/",
+    "path": "/home",
     "meta": {
       "title": "首页"
-    },
-    "children": [
-      {
-        "path": "/home",
-        "component": "Home"
-      }
-    ]
+    }
   },
   {
     "path": "/loan-input",

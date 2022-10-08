@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import HomeView from "../views/HomeView.vue";
+import Home from "../views/HomeView.vue";
 import { whiteUrlList } from "@/config/conf";
 import { checkLogin } from "@/utils";
 import store from "@/store";
@@ -8,6 +8,7 @@ import Axios from "axios";
 import { pretty } from "@/utils/request";
 import Layout from "@/layouts/Layout";
 Vue.use(VueRouter);
+// 处理路由跳转的异常提示: 功能上没有问题的，要么换3.0版本 要么catch一下不处理不报错
 // 先存储默认底层的push
 const originPush = VueRouter.prototype.push;
 VueRouter.prototype.push = function (location, resolve, reject) {
@@ -31,8 +32,18 @@ const constantRouter = [
   //实时加载
   {
     path: "/",
-    name: "home",
-    component: HomeView,
+    redirect: "/home",
+    name: "Home",
+    meta: {
+      title: "首页",
+    },
+    component: Layout,
+    children: [
+      {
+        path: "/home",
+        component: Home,
+      },
+    ],
   },
   {
     // 懒加载
@@ -49,45 +60,68 @@ const constantRouter = [
     name: "Login",
     component: () => import("../views/Login.vue"),
   },
+  {
+    path: "/404",
+    name: "NotFound",
+    component: () => import("../views/404.vue"),
+  },
+  {
+    path: "/401",
+    name: "Reject",
+    component: () => import("../views/401.vue"),
+  },
+  // 常规操作是这里加入，处理404
+  // 异步路由 会被前面的* 优先匹配所无法匹配到
+  /*   {
+    path: "*",
+    redirect: {
+      name: "notFound",
+    },
+  }, */
 ];
 
 const router = new VueRouter({
   routes: constantRouter,
 });
 function asyncRoutesHandler(routes) {
-  return routes.map(r => {
-    if (r.component === 'Layout') {
+  return routes.map((r) => {
+    if (r.component === "Layout") {
       r.component = Layout;
     } else {
       const filePath = r.component;
-      r.component = () => import(`../views/${filePath}.vue`)
+      r.component = () => import(`../views/${filePath}.vue`);
     }
     if (r.children) {
       r.children = asyncRoutesHandler(r.children);
     }
     return r;
-  })
-
-
+  });
 }
 async function loadMenus(next, to) {
-  let [res, err] = await pretty(Axios.get('http://localhost:8080/menus.json', {
-    responseType: 'json'
-  }));
+  let [res, err] = await pretty(
+    Axios.get("http://localhost:8080/menus.json", {
+      responseType: "json",
+    })
+  );
   if (err) {
-    throw new Error('加载动态菜单出错' + err.message);
+    throw new Error("加载动态菜单出错" + err.message);
   }
   let asyncRoutes = asyncRoutesHandler(res.data);
 
   // router.addRoutes(asyncRoutes); // 这个方法废弃了
-
-  asyncRoutes.forEach(r => {
+  // 最后一个是404的重定向
+  asyncRoutes.push({
+    path: "*",
+    redirect: {
+      name: "NotFound",
+    },
+  });
+  asyncRoutes.forEach((r) => {
     router.addRoute(r);
-  })
+  });
   // 保存用户菜单 => 生成左侧动态菜单栏
-  store.commit('user/changeUserMenus', res.data); // 不需要存储组件函数,基本的一些描述字符串即可
+  store.commit("user/changeUserMenus", res.data); // 不需要存储组件函数,基本的一些描述字符串即可
   next({ ...to, replace: true }); // 替换当前访问的路径,不会有多余上一页的箭头
-
 }
 
 router.beforeEach((to, from, next) => {

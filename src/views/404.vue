@@ -35,7 +35,7 @@ export default {
   position: absolute;
   top: 40%;
   left: 50%;
-  background: blue;
+  background: yellowgreen;
 }
 .wscn-http404 {
   position: relative;

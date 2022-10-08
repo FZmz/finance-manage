@@ -1,5 +1,6 @@
+import router from "@/router";
 import axios from "axios";
-import { Loading, Message } from "element-ui";
+import { Loading, Message, Notification } from "element-ui";
 export const req = axios.create({
   baseURL: "/api",
 });
@@ -32,7 +33,16 @@ req.interceptors.response.use(
       window.sessionStorage.setItem("token", token);
     }
     // 603 代表token失效 跳转到权限不足页面
-    if (response.data.data) return response;
+    if (response?.data?.code === 603) {
+      //token失效
+      Notification.error({
+        title: "错误",
+        message: "token失效,请重新登录",
+      });
+      // 替换到401页面
+      router.replace("/401");
+    }
+    return response;
   },
   (err) => {
     Message.error(err.Message);
@@ -47,6 +57,6 @@ export const pretty = function (promise) {
       return [data, undefined];
     })
     .catch((err) => {
-      [undefined, err];
+      return [undefined, err];
     });
 };

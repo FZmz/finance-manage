@@ -6,11 +6,13 @@ import router from './router'
 import store from './store'
 import './assets/normalize.css';
 import Axios from 'axios';
+import plugins from '@/plugins'
 // 和代理做标识的对应，baseUrl
 Axios.defaults.baseURL = '/api'
 Vue.prototype.$ajax = Axios;
 Vue.config.productionTip = false
 Vue.use(ElementUI);
+Vue.use(plugins)
 new Vue({
   router,
   store,

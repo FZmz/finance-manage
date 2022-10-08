@@ -1,18 +1,390 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <el-row :gutter="20">
+      <el-col
+        :xl="6"
+        :lg="6"
+        :md="12"
+        :sm="24"
+        v-for="(item, index) in list"
+        :key="index"
+      >
+        <div class="dashboard-item" :style="{ background: item.color }">
+          <p>{{ item.title }}</p>
+          <!-- count-to -->
+          <countTo :startVal="0" :endVal="item.num" :duration="3000"></countTo>
+        </div>
+      </el-col>
+    </el-row>
+    <div class="echarts-box">
+      <div class="chart1" style="width:100%"></div>
+      <div class="chart2" style="width:50%"></div>
+      <div class="chart3" style="width:50%;height: 380px;"></div>
+    </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
+import countTo from "vue-count-to";
+import * as echarts from 'echarts';
 export default {
-  name: 'HomeView',
+  name: "HomeView",
+  methods: {
+    initCharts() {
+      let option1 = {
+        title: {
+          text: "第一个图表",
+        },
+        tooltip: {
+          trigger: "axis",
+        },
+        legend: {
+          data: ["Email", "Union Ads", "Video Ads", "Direct", "Search Engine"],
+        },
+        grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "3%",
+          containLabel: true,
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {},
+          },
+        },
+        xAxis: {
+          type: "category",
+          boundaryGap: false,
+          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        },
+        yAxis: {
+          type: "value",
+        },
+        series: [
+          {
+            name: "Email",
+            type: "line",
+            stack: "Total",
+            data: [120, 132, 101, 134, 90, 230, 210],
+          },
+          {
+            name: "Union Ads",
+            type: "line",
+            stack: "Total",
+            data: [220, 182, 191, 234, 290, 330, 310],
+          },
+          {
+            name: "Video Ads",
+            type: "line",
+            stack: "Total",
+            data: [150, 232, 201, 154, 190, 330, 410],
+          },
+          {
+            name: "Direct",
+            type: "line",
+            stack: "Total",
+            data: [320, 332, 301, 334, 390, 330, 320],
+          },
+          {
+            name: "Search Engine",
+            type: "line",
+            stack: "Total",
+            data: [820, 932, 901, 934, 1290, 1330, 1320],
+          },
+        ],
+      };
+      let posList = [
+        "left",
+        "right",
+        "top",
+        "bottom",
+        "inside",
+        "insideTop",
+        "insideLeft",
+        "insideRight",
+        "insideBottom",
+        "insideTopLeft",
+        "insideTopRight",
+        "insideBottomLeft",
+        "insideBottomRight",
+      ];
+      let app = {};
+
+      app.configParameters = {
+        rotate: {
+          min: -90,
+          max: 90,
+        },
+        align: {
+          options: {
+            left: "left",
+            center: "center",
+            right: "right",
+          },
+        },
+        verticalAlign: {
+          options: {
+            top: "top",
+            middle: "middle",
+            bottom: "bottom",
+          },
+        },
+        position: {
+          options: posList.reduce(function (map, pos) {
+            map[pos] = pos;
+            return map;
+          }, {}),
+        },
+        distance: {
+          min: 0,
+          max: 100,
+        },
+      };
+      app.config = {
+        rotate: 90,
+        align: "left",
+        verticalAlign: "middle",
+        position: "insideBottom",
+        distance: 15,
+        onChange: function () {
+          const labelOption = {
+            rotate: app.config.rotate,
+            align: app.config.align,
+            verticalAlign: app.config.verticalAlign,
+            position: app.config.position,
+            distance: app.config.distance,
+          };
+          this.chart2.setOption({
+            series: [
+              {
+                label: labelOption,
+              },
+              {
+                label: labelOption,
+              },
+              {
+                label: labelOption,
+              },
+              {
+                label: labelOption,
+              },
+            ],
+          });
+        },
+      };
+      const labelOption = {
+        show: true,
+        position: app.config.position,
+        distance: app.config.distance,
+        align: app.config.align,
+        verticalAlign: app.config.verticalAlign,
+        rotate: app.config.rotate,
+        formatter: "{c}  {name|{a}}",
+        fontSize: 16,
+        rich: {
+          name: {},
+        },
+      };
+      let option2 = {
+        tooltip: {
+          trigger: "axis",
+          axisPointer: {
+            type: "shadow",
+          },
+        },
+        legend: {
+          data: ["Forest", "Steppe", "Desert", "Wetland"],
+        },
+        toolbox: {
+          show: true,
+          orient: "vertical",
+          left: "right",
+          top: "center",
+          feature: {
+            mark: { show: true },
+            dataView: { show: true, readOnly: false },
+            magicType: { show: true, type: ["line", "bar", "stack"] },
+            restore: { show: true },
+            saveAsImage: { show: true },
+          },
+        },
+        xAxis: [
+          {
+            type: "category",
+            axisTick: { show: false },
+            data: ["2012", "2013", "2014", "2015", "2016"],
+          },
+        ],
+        yAxis: [
+          {
+            type: "value",
+          },
+        ],
+        series: [
+          {
+            name: "Forest",
+            type: "bar",
+            barGap: 0,
+            label: labelOption,
+            emphasis: {
+              focus: "series",
+            },
+            data: [320, 332, 301, 334, 390],
+          },
+          {
+            name: "Steppe",
+            type: "bar",
+            label: labelOption,
+            emphasis: {
+              focus: "series",
+            },
+            data: [220, 182, 191, 234, 290],
+          },
+          {
+            name: "Desert",
+            type: "bar",
+            label: labelOption,
+            emphasis: {
+              focus: "series",
+            },
+            data: [150, 232, 201, 154, 190],
+          },
+          {
+            name: "Wetland",
+            type: "bar",
+            label: labelOption,
+            emphasis: {
+              focus: "series",
+            },
+            data: [98, 77, 101, 99, 40],
+          },
+        ],
+      };
+      let option3 = {
+        angleAxis: {},
+        radiusAxis: {
+          type: "category",
+          data: ["Mon", "Tue", "Wed", "Thu"],
+          z: 10,
+        },
+        polar: {},
+        series: [
+          {
+            type: "bar",
+            data: [1, 2, 3, 4],
+            coordinateSystem: "polar",
+            name: "A",
+            stack: "a",
+            emphasis: {
+              focus: "series",
+            },
+          },
+          {
+            type: "bar",
+            data: [2, 4, 6, 8],
+            coordinateSystem: "polar",
+            name: "B",
+            stack: "a",
+            emphasis: {
+              focus: "series",
+            },
+          },
+          {
+            type: "bar",
+            data: [1, 2, 3, 4],
+            coordinateSystem: "polar",
+            name: "C",
+            stack: "a",
+            emphasis: {
+              focus: "series",
+            },
+          },
+        ],
+        legend: {
+          show: true,
+          data: ["A", "B", "C"],
+          orient: 'vertical',
+          right: 50,
+          top: 30
+        },
+      };
+      this.chart1 = echarts.init(document.querySelector(".chart1"));
+      this.chart2 = echarts.init(document.querySelector(".chart2"));
+      this.chart3 = echarts.init(document.querySelector(".chart3"));
+      this.chart1.setOption(option1); // getOptions() 调试用的
+      this.chart2.setOption(option2);
+      this.chart3.setOption(option3);
+    },
+    resize() {
+      this.chart1.resize();
+      this.chart2.resize();
+      this.chart3.resize();
+    },
+  },
+  mounted() {
+    this.initCharts();
+    this.resizeCallback = this.resize.bind(this);
+    window.addEventListener("resize", this.resizeCallback);
+  },
   components: {
-    HelloWorld
+    countTo,
+  },
+  data() {
+    return {
+      list: [
+        {
+          color: "#5fc335",
+          title: "最高可接金额",
+          num: 13594,
+        },
+        {
+          color: "#ff6f00",
+          title: "回报率",
+          num: 9833,
+        },
+        {
+          color: "#ff796c",
+          title: "业绩领跑",
+          num: 8888,
+        },
+        {
+          color: "#30a0ff",
+          title: "安稳底薪战队",
+          num: 6666,
+        },
+      ],
+    };
+  },
+};
+</script>
+<style lang="scss" scoped>
+.dashboard-item {
+  height: 200px;
+  font-weight: bold;
+  color: #fff;
+  > p {
+    color: black;
+    height: 40px;
+    margin: 0;
   }
 }
-</script>
+.echarts-box {
+  .chart1 {
+    width: 100%;
+  }
+  .chart1,
+  .chart2 {
+    height: 400px;
+    width: 50%;
+    margin-top: 30px;
+  }
+  .chart2 {
+    float: left;
+  }
+  .chart3 {
+    float: right;
+  }
+  overflow: hidden;
+}
+</style>

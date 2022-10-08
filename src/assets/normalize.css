@@ -389,3 +389,11 @@ body {
   top: 50%;
   transform: translate(-50%,-50%);
 }
+.left{
+  float: left;
+}
+.clear-fix::after{
+  content: '';
+  height: 0;
+  clear: both;
+}
